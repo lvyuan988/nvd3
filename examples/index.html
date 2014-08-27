@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>NVD3.js :: re-usable charts for d3.js</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Bob Monteverde">
+    <link href="css/common.css" rel="stylesheet">
+    <link href="../src/nv.d3.css" rel="stylesheet">
+    <link href="../src/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    .statement_para {
+        font-size: 14pt;
+        line-height: 120%;
+        width: 60%;
+        text-align: justify;
+        text-justify: distribute;
+        margin: 10px auto;
+        margin-bottom: 30px;
+    }
+.nvd3.nv-line .nvd3.nv-scatter .nv-groups .nv-point{
+      fill-opacity: 1;
+      stroke-opacity: 1;
+      fill:#fff;
+    }
+    .chartlist{width:600px;height:360px;overflow:hidden;float: left;}
+   /* .chartlist .row{display:block;float:left;}
+    .chartlist .cur{display:block;}*/
+    .chart_namelist{float: right;margin:0 200px 0 0;}
+    .chart_namelist li{margin:0 0 10px 0;cursor: pointer;}
+    .chart_namelist li:hover,.chart_namelist li.cur{color:#1f77b4;}
+    </style>
+    
+
+
+    
+  </head>
+
+  <body>
+
+
+    <div class="container">
+
+      <!--Begin chartlist-->
+      <div id="chartlist" class="chartlist">
+          <div class="row cur">
+            <div class="span6">
+              <svg id="mainExample" style="height:360px"></svg>
+            </div>
+          </div>
+          <div class="row">
+            <div class="span6">
+              <svg id="exampleOne" style="height:360px"></svg>
+            </div>
+          </div>
+          <div class="row">
+            <div class="span6">
+              <svg id="exampleTwo" style="height:360px"></svg>
+            </div>
+          </div>
+          <div class="row">
+            <div class="span6">
+              <svg id="exampleThree" style="height:360px"></svg>
+            </div>
+          </div>
+      </div>
+      <!--chartlist End-->
+      <!--Begin chartNamelist-->
+      <ul id="chartNamelist" class="chart_namelist">
+          <li class="cur">Multi-Bar Chart</li>
+          <li> Line Chart</li>
+          <li>Multi-Bar Chart</li>
+          <li>Multi-Bar Chart</li>
+      </ul>
+      <!--chartNamelist End-->
+
+    
+    </div> <!-- /container -->
+    <script src="../lib/jquery.min.js"></script>
+    <script src="../lib/bootstrap.min.js"></script>
+    <script src="../lib/d3.v3.js"></script>
+    <script src="../nv.d3.js"></script>
+    <script src="../src/models/scatter.js"></script>
+    <script src="stream_layers.js"></script>
+    <script src="../src/models/index.js"></script>
+
+    <script type="text/javascript">
+    $(function(){
+      var chartNamelist = $('#chartNamelist'),
+          chartList = $('#chartlist'),
+          chartNamelistli = $('#chartlist .row'),
+          chartListLi = $('#chartNamelist li');
+
+          chartListLi.click(function(){
+            var _this = $(this),
+                _index = _this.index();
+
+                
+               chartNamelistli.eq(_index).fadeIn().siblings().fadeOut();
+               chartListLi.eq(_index).addClass('cur').siblings().removeClass('cur');
+              
+          });
+    })
+
+    </script>
+
+  </body>
+</html>
+

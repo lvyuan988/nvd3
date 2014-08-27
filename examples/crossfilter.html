@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<link href="../src/nv.d3.css" rel="stylesheet" type="text/css">
+
+<style>
+
+body {
+  overflow-y:scroll;
+}
+
+text {
+  font: 12px sans-serif;
+}
+
+svg {
+  display: block;
+}
+
+#chart1 svg {
+  width:500px;
+  height: 500px;
+  min-width: 100px;
+  min-height: 100px;
+/*
+  margin: 50px;
+  Minimum height and width is a good idea to prevent negative SVG dimensions...
+  For example width should be =< margin.left + margin.right + 1,
+  of course 1 pixel for the entire chart would not be very useful, BUT should not have errors
+*/
+}
+.nvd3.nv-line .nvd3.nv-scatter .nv-groups .nv-point {
+fill-opacity: 1;
+stroke-opacity: 1;
+}
+.nv-brush .extent {
+fill-opacity: .125 !important;
+shape-rendering: crispEdges;
+}
+.yelcirlce{stroke: #ff5b53 !important;fill: #409f89 !important;}
+.circlecur{stroke: red !important;fill: red !important;}
+/*.nvd3 .nv-point-paths path {
+stroke: #aaa;
+stroke-opacity: 1;
+fill: #eee;
+fill-opacity: 1;
+}*/
+</style>
+<body>
+
+  <div id="chart">
+    <svg style="height: 500px;width:1000px;"></svg>
+  </div>
+
+<script src="../lib/d3.v3.js"></script>
+<script src="../lib/crossfilter.js"></script>
+<script src="../nv.d3.js"></script>
+<script src="../jquery.js"></script>
+<script src="../src/tooltip.js"></script>
+<script src="../src/utils.js"></script>
+<script src="../src/models/legend.js"></script>
+<script src="../src/models/axis.js"></script>
+<script src="../src/models/scatter.js"></script>
+<script src="../src/models/line.js"></script>
+<script src="../src/models/lineWithFocusChart.js"></script>
+<script src="stream_layers.js"></script>
+<script>
+
+var testdata = [{"key":"All","values":[{"x":1.3121568e+12,"y":493,"link":"CsiMonthly.php?month=2011-08","tooltip":"493 at Aug\/11"},{"x":1.3148352e+12,"y":657,"link":"CsiMonthly.php?month=2011-09","tooltip":"657 at Sep\/11"},{"x":1.3174272e+12,"y":877,"link":"CsiMonthly.php?month=2011-10","tooltip":"877 at Oct\/11"},{"x":1.3201056e+12,"y":1150,"link":"CsiMonthly.php?month=2011-11","tooltip":"1150 at Nov\/11"},{"x":1.3226976e+12,"y":1026,"link":"CsiMonthly.php?month=2011-12","tooltip":"1026 at Dec\/11"},{"x":1.325376e+12,"y":985,"link":"CsiMonthly.php?month=2012-01","tooltip":"985 at Jan\/12"},{"x":1.3280544e+12,"y":1164,"link":"CsiMonthly.php?month=2012-02","tooltip":"1164 at Feb\/12"},{"x":1.33056e+12,"y":1545,"link":"CsiMonthly.php?month=2012-03","tooltip":"1545 at Mar\/12"},{"x":1.3332384e+12,"y":1200,"link":"CsiMonthly.php?month=2012-04","tooltip":"1200 at Apr\/12"},{"x":1.3358304e+12,"y":1401,"link":"CsiMonthly.php?month=2012-05","tooltip":"1401 at May\/12"},{"x":1.3385088e+12,"y":917,"link":"CsiMonthly.php?month=2012-06","tooltip":"917 at Jun\/12"},{"x":1.3411008e+12,"y":944,"link":"CsiMonthly.php?month=2012-07","tooltip":"944 at Jul\/12"},{"x":1.3437792e+12,"y":830,"link":"CsiMonthly.php?month=2012-08","tooltip":"830 at Aug\/12"},{"x":1.3464576e+12,"y":791,"link":"CsiMonthly.php?month=2012-09","tooltip":"791 at Sep\/12"},{"x":1.3490496e+12,"y":1205,"link":"CsiMonthly.php?month=2012-10","tooltip":"1205 at Oct\/12"},{"x":1.351728e+12,"y":899,"link":"CsiMonthly.php?month=2012-11","tooltip":"899 at Nov\/12"},{"x":1.35432e+12,"y":837,"link":"CsiMonthly.php?month=2012-12","tooltip":"837 at Dec\/12"},{"x":1.3569984e+12,"y":929,"link":"CsiMonthly.php?month=2013-01","tooltip":"929 at Jan\/13"},{"x":1.3596768e+12,"y":877,"link":"CsiMonthly.php?month=2013-02","tooltip":"877 at Feb\/13"},{"x":1.362096e+12,"y":920,"link":"CsiMonthly.php?month=2013-03","tooltip":"920 at Mar\/13"},{"x":1.3647744e+12,"y":995,"link":"CsiMonthly.php?month=2013-04","tooltip":"995 at Apr\/13"},{"x":1.3673664e+12,"y":1069,"link":"CsiMonthly.php?month=2013-05","tooltip":"1069 at May\/13"},{"x":1.3700448e+12,"y":1115,"link":"CsiMonthly.php?month=2013-06","tooltip":"1115 at Jun\/13"},{"x":1.3752288e+12,"y":4998,"link":"CsiMonthly.php?month=2013-07","tooltip":"498 at Jul\/13"}],"color":"#60d8e9"}]
+var lens = testdata[0].values.length;
+var timeon = testdata[0].values[lens-1].x;
+
+/*
+//For testing single data point
+var testdata = [
+  {
+    "key" : "Quantity" ,
+    "bar": true,
+    "values" : [ [ 1136005200000 , 1271000.0] ]
+  } ,
+  {
+    "key" : "Price" ,
+    "values" : [ [ 1136005200000 , 71.89] ]
+  }
+].map(function(series) {
+  series.values = series.values.map(function(d) { return {x: d[0], y: d[1] } });
+  return series;
+});
+*/
+
+
+
+
+
+window.onload = function(){
+  nv.addGraph(function() {
+  var chart = nv.models.lineWithFocusChart(timeon)
+      .margin({top: 30, right: 60, bottom: 50, left: 70})
+        .x(function(d,i) { return i })
+        .color(d3.scale.category10().range())
+        .showLegend(false)
+
+
+    chart.xAxis.tickFormat(function(d) {
+      // console.log(d);
+
+      var dx = testdata[0].values[d] && testdata[0].values[d].x || 0;
+      if (dx > 0) {
+          return d3.time.format('%x')(new Date(dx))
+      }
+      return null;
+    }).showMaxMin(false);
+
+    chart.x2Axis.tickFormat(function(d) {
+      var dx = testdata[0].values[d] && testdata[0].values[d].x || 0;
+      return d3.time.format('%x')(new Date(dx))
+    });
+
+  chart.yAxis
+      .tickFormat(d3.format(',.2f'));
+  chart.y2Axis
+      .tickFormat(d3.format(',.2f'));
+
+
+
+    
+  d3.select('#chart svg')
+      .datum(testdata)
+    .transition().duration(500)
+      .call(chart);
+
+
+
+  nv.utils.windowResize(chart.update);
+  setCircleState(timeon);
+  return chart;
+});
+
+
+  
+
+}
+
+function getCurSate(cur_time){
+  // console.log(cur_time);
+  $('circle').each(function(i){
+        if($(this).attr('curtime') == cur_time){
+          $(this).attr('style','fill: red !important');
+         }else{
+           $(this).removeAttr('style');
+         }
+    });
+}
+function setCircleState(cur_time){
+  window.onmouseup = function(){
+     getCurSate(cur_time);
+  }
+  window.onmousemove = function(){
+    getCurSate(cur_time);
+  }
+  window.onmousedown = function(){
+     getCurSate(cur_time);
+  }
+   getCurSate(cur_time);
+}
+
+</script>
